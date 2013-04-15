@@ -1,4 +1,4 @@
-package com.coresolutins.training;
+package com.johnson.tao;
 
 import static org.junit.Assert.assertTrue;
 

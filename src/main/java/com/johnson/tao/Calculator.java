@@ -1,4 +1,4 @@
-package com.coresolutins.training;
+package com.johnson.tao;
 
 public class Calculator {
 	private final static int PLUS = 1;

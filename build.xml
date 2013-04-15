@@ -1,0 +1,66 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" 
+            name="example" default="report"> 
+    <property name="src.dir" value="src/main/java"/> 
+    <property name="test.dir" value="src/test/java"/> 
+    <property name="lib.dir" value="lib"/> 
+    <property name="bin.dir" value="bin"/>
+    <property name="report.dir" value="report"/>
+   
+		<path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    
+    <property name="junit.dir" value="lib/junit-4.10.jar"/>
+
+    <target name="retrieve">
+        <ivy:retrieve file="./ivy.xml" sync="true"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${bin.dir}"/>
+        <delete dir="${report.dir}"/>
+    </target>
+    
+    <target name="prepare" depends="clean"> 
+        <mkdir dir="${bin.dir}"/> 
+        <mkdir dir="${report.dir}"/> 
+    </target> 
+
+    <target name="compile" depends="prepare"> 
+        <javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="classpath" includeantruntime="false" /> 
+    </target>
+ 
+     <target name="compile-test" depends="compile"> 
+        <javac srcdir="${test.dir}" destdir="${bin.dir}" classpathref="classpath" includeantruntime="false"> 
+						<classpath> 
+                <pathelement location="${bin.dir}"/>
+            </classpath>
+				</javac>
+    </target>
+           	
+    <target name="test" depends="compile-test"> 
+        <junit printsummary="yes">
+            <formatter type="xml"/>
+            <batchtest todir="${report.dir}">
+                <fileset dir="${test.dir}" includes="**/*Test.java"/>
+            </batchtest>
+            <classpath> 
+                <pathelement location="${bin.dir}"/>
+            </classpath>
+						<classpath refid="classpath"/>  
+        </junit> 
+    </target> 
+
+    <target name="report" depends="test"> 
+        <junitreport todir="${report.dir}"> 
+            <fileset dir="${report.dir}"> 
+                <include name="TEST-*.xml"/> 
+            </fileset> 
+            <report format="frames" todir="${report.dir}/html"/> 
+        </junitreport> 
+    </target>    
+
+       
+</project>
